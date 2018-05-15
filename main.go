@@ -69,7 +69,7 @@ func main() {
 	}
 
 	// CHECKPOINT -
-	// Redigo stores embedded pointers as MultiBulk entries, which are essentially
+	// Redigo stores embedded objects as MultiBulk entries, which are essentially
 	// just string objects. All key/value pairs are stored as strings.
 	// The only way we can read the stored Hash members is to use the HGETALL and return
 	// the values as a map[string]string.
@@ -81,6 +81,11 @@ func main() {
 	fmt.Printf("[HASH] Student Info %v [Type %T]\n", outStudentMap["Info"], outStudentMap["Info"])
 	// OUTPUT :
 	// [HASH] Student Info &{John Doe CSE} [Type string]
+	// =====================================
+	// 127.0.0.1:6379> HGET JohnDoeHash Info
+	// Info
+	// &{John Doe CSE}
+	// =====================================
 
 	outJSON, err := getStructReJSON(conn, "JohnDoeJSON")
 	if err != nil {
@@ -97,6 +102,14 @@ func main() {
 	fmt.Printf("[ReJSON] Student Info %v [Type %T]\n", outStudent.Info, outStudent.Info)
 	// OUTPUT :
 	// [ReJSON] Student Info &{John Doe CSE} [Type *main.StudentDetails]
+	// =====================================
+	// 127.0.0.1:6379> JSON.GET JohnDoeJSON INDENT "\t" NEWLINE "\n" SPACE " " .info
+	// {
+	// 		"FirstName": "John",
+	// 		"LastName": "Doe",
+	// 		"Major": "CSE"
+	// }
+	// =====================================
 
 	// CHECKPOINT :
 	// Alternatively we could still use Redigo HSET to store our object as a JSON string
@@ -121,6 +134,11 @@ func main() {
 	fmt.Printf("[HSET JSON] Student Info %v [Type %T]\n", outHashJSONStudent.Info, outHashJSONStudent.Info)
 	// OUTPUT :
 	// [HSET JSON] Student Info &{John Doe CSE} [Type *main.StudentDetails]
+	// =====================================
+	// 127.0.0.1:6379> HGETALL JohnDoeHashJSON
+	// JSON
+	// {"info":{"FirstName":"John","LastName":"Doe","Major":"CSE"},"rank":1}
+	// =====================================
 
 }
 
