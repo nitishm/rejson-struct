@@ -81,3 +81,80 @@ if err != nil {
 ```
 
 There is a whole bunch of documentation around using the ReJSON module available at [rejson.io](http://rejson.io/).
+
+# Example
+## Running
+### Docker
+Run the docker container provided by ReJSON as follows,
+
+```
+docker run -p 6379:6379 --name redis-rejson redislabs/rejson:latest
+```
+
+Once the container has spun up, run the `main.go` by performing,
+
+```
+go run main.go
+```
+
+## Output
+Running the example would generate the entries shown below : 
+```
+127.0.0.1:6379> keys *
+1) "JohnDoeJSON"
+2) "JohnDoeHashJSON"
+3) "JohnDoeHash"
+```
+
+**Re-JSON (with pretty print options)**
+```
+127.0.0.1:6379> JSON.GET JohnDoeJSON INDENT "\t" NEWLINE "\n" SPACE " "
+{
+        "info": {
+                "FirstName": "John",
+                "LastName": "Doe",
+                "Major": "CSE"
+        },
+        "rank": 1
+}
+```
+
+**HGETALL with key/value pair in odd/even numbers**
+```
+127.0.0.1:6379> HGETALL JohnDoeHash
+Info
+&{John Doe CSE}
+Rank
+1
+```
+
+**HGETALL (stored as JSON)**
+```
+127.0.0.1:6379> HGETALL JohnDoeHashJSON
+JSON
+{"info":{"FirstName":"John","LastName":"Doe","Major":"CSE"},"rank":1}
+```
+
+# The fancy bits
+## Getting an object field using ReJSON
+```
+127.0.0.1:6379> JSON.GET JohnDoeJSON INDENT "\t" NEWLINE "\n" SPACE " " .info
+{
+        "FirstName": "John",
+        "LastName": "Doe",
+        "Major": "CSE"
+}
+```
+
+## Setting an object field using ReJSON
+```
+127.0.0.1:6379> JSON.SET JohnDoeJSON info.Major '"EEE"'
+OK
+
+127.0.0.1:6379> JSON.GET JohnDoeJSON INDENT "\t" NEWLINE "\n" SPACE " " .info
+{
+        "FirstName": "John",
+        "LastName": "Doe",
+        "Major": "EEE"
+}
+```
