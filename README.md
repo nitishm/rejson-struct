@@ -1,4 +1,9 @@
 # Using Redis HMSET versus RedisLab's ReJSON for golang objects
+
+Check out my Medium post about chosing ReJSON for storing Go Structs at https://medium.com/@nitishmalhotra/storing-go-structs-in-redis-using-rejson-dab7f8fc0053
+
+---
+
 In this example I present an alternative way to use Redis to store (embedded) structs like -
 ```golang
 type Student struct {
@@ -157,4 +162,17 @@ OK
         "LastName": "Doe",
         "Major": "EEE"
 }
+```
+
+# Running the example
+## Launching Redis with ReJSON module
+```
+docker run -p 6379:6379 --name redis-rejson redislabs/rejson:latest
+```
+
+## Running the code
+```
+git clone https://github.com/nitishm/rejson-struct.git
+cd rejson-struct
+go run main.go
 ```
